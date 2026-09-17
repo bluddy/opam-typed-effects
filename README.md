@@ -4,25 +4,24 @@ This repository provides OPAM packages for the experimental `typed_effects` bran
 
 ## Quick Start
 
-### 1. Add this repository to OPAM
+### 1. Register the repository in OPAM (isolated)
 
-To make it available for new switches (recommended):
+Register the repository without modifying existing switches or defaults:
 ```bash
-opam repo add typed-effects git+https://github.com/bluddy/opam-typed-effects.git --set-default
+opam repo add typed-effects git+https://github.com/bluddy/opam-typed-effects.git --dont-select
 ```
 
 Or for local development:
 ```bash
-opam repo add typed-effects ~/source/ocaml/typed-effects/opam --set-default
+opam repo add typed-effects ~/source/ocaml/typed-effects/opam --dont-select
 ```
 
-### 2. Create an OPAM switch with the typed effects compiler
+### 2. Create an OPAM switch for typed effects
 
+Enable the `typed-effects` repository specifically for this new switch:
 ```bash
-opam switch create typed-effects ocaml-variants.5.6.0+typed-effects
+opam switch create typed-effects --repositories=typed-effects,default ocaml-variants.5.6.0+typed-effects
 ```
-
-*(Note: If you didn't add the repo with `--set-default`, specify the repositories explicitly: `opam switch create typed-effects --repositories=typed-effects,default ocaml-variants.5.6.0+typed-effects`)*
 
 ### 3. Verify installation
 
