@@ -125,6 +125,25 @@ Run your program:
 dune exec ./bin/main.exe
 ```
 
+#### Opening `stdlib-v2` Globally (Without per-file `open`)
+
+To avoid writing `open Stdlib_v2` in every source file, you can open it globally in Dune using the `-open Stdlib_v2` flag:
+
+**Per executable / library (`bin/dune`):**
+```lisp
+(executable
+ (name main)
+ (libraries stdlib_v2)
+ (flags :standard -open Stdlib_v2))
+```
+
+**Project-wide (`dune` or `dune-workspace`):**
+```lisp
+(env
+ (_
+  (flags :standard -open Stdlib_v2)))
+```
+
 ---
 
 ## Typed Effects Syntax Cheat Sheet
@@ -153,3 +172,5 @@ dune exec ./bin/main.exe
 - `ocaml-variants.5.6.0+typed-effects`: OCaml 5.6 development compiler with pure-by-default, row-polymorphic typed effects.
 - `dune.3.24.2+typed-effects`: Dune build system compatible with OCaml 5.6 trunk and typed effects.
 - `stdlib_v2`: Standard library overlay offering effect-polymorphic higher-order functions.
+- `miou`: Composable concurrency primitives and effect-based scheduler ported to typed effects and `stdlib_v2`.
+
