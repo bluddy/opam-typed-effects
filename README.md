@@ -155,6 +155,8 @@ To avoid writing `open Stdlib_v2` in every source file, you can open it globally
 | **Specific effect arrow** | `'a -[ Log ]-> 'b` | Function may perform the `Log` effect. |
 | **Effect-polymorphic arrow** | `'a -[ 'e ]-> 'b` | Arrow carrying a row variable `'e`. |
 | **Multiple effects** | `'a -[ Log, Yield \| 'e ]-> 'b` | Row with labels and row extension variable `'e`. |
+| **Negative constraint (exclusion)** | `'a -[ ~Log \| 'e ]-> 'b` | Statically forbids `Log` from appearing in the row (prevents that effect from showing up). |
+| **Effect families (GADTs/ADTs)** | `type _ State =`<br>`\| Get : 's State`<br>`\| Put : 's -> unit State`<br>`type _ Effect.t += State : 'a State -> 'a Effect.t` | Encapsulates a family of operations (e.g. `Get`, `Put`) under a single effect constructor (`State`) to avoid row explosion. |
 | **Effect declaration** | `type _ Effect.t += Eff : arg -> res Effect.t` | Extensible variant for effect constructors. |
 | **Performing an effect** | `Effect.perform (Eff arg)` | Yields control to the enclosing ambient handler. |
 | **Handling effects** | `match body () with`<br>`\| v -> v`<br>`\| effect (Eff x), k -> Effect.Deep.continue k res` | Deep pattern matching on effects with continuation `k`. |
@@ -167,10 +169,47 @@ To avoid writing `open Stdlib_v2` in every source file, you can open it globally
 
 ---
 
+### Option C: Concurrent I/O with Eio & Typed Effects
+
+Install Eio:
+```bash
+opam install eio eio_posix eio_main -y
+```
+
+Create `bin/dune`:
+```lisp
+(executable
+ (name main)
+ (flags :standard -open Stdlib_v2)
+ (libraries eio_main stdlib_v2))
+```
+
+Create `bin/main.ml`:
+```ocaml
+open Eio.Std
+
+let () =
+  Eio_main.run @@ fun env ->
+  traceln "Running on Eio!";
+  Fiber.both
+    (fun () -> for x = 1 to 3 do traceln "x = %d" x; Fiber.yield () done)
+    (fun () -> for y = 1 to 3 do traceln "y = %d" y; Fiber.yield () done)
+```
+
+Run your program:
+```bash
+dune exec ./bin/main.exe
+```
+
+---
+
 ## Included Packages
 
 - `ocaml-variants.5.6.0+typed-effects`: OCaml 5.6 development compiler with pure-by-default, row-polymorphic typed effects.
 - `dune.3.24.2+typed-effects`: Dune build system compatible with OCaml 5.6 trunk and typed effects.
 - `stdlib_v2`: Standard library overlay offering effect-polymorphic higher-order functions.
 - `miou`: Composable concurrency primitives and effect-based scheduler ported to typed effects and `stdlib_v2`.
+- `eio`: Effects-based parallel I/O API for multicore OCaml with fibers, ported to typed effects and `stdlib_v2`.
+- `eio_posix`: POSIX backend for Eio.
+- `eio_main`: Cross-platform Eio main loop runner.
 

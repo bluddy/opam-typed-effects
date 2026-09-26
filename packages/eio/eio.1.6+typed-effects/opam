@@ -1,0 +1,43 @@
+opam-version: "2.0"
+name: "eio"
+version: "1.6+typed-effects"
+synopsis: "Effect-based direct-style IO API for OCaml (typed-effects compatible)"
+description: "An effect-based IO API for multicore OCaml with fibers, ported to OCaml typed effects and stdlib_v2."
+maintainer: ["anil@recoil.org"]
+authors: ["Anil Madhavapeddy" "Thomas Leonard"]
+license: "ISC"
+homepage: "https://github.com/bluddy/eio"
+doc: "https://ocaml-multicore.github.io/eio/"
+bug-reports: "https://github.com/bluddy/eio/issues"
+depends: [
+  "dune" {>= "3.9"}
+  "ocaml" {>= "5.2.0"}
+  "bigstringaf" {>= "0.9.0"}
+  "cstruct" {>= "6.0.1"}
+  "lwt-dllist"
+  "optint" {>= "0.1.0"}
+  "psq" {>= "0.2.0"}
+  "fmt" {>= "0.8.9"}
+  "hmap" {>= "0.8.1"}
+  "domain-local-await" {>= "0.1.0"}
+  "stdlib_v2"
+  "mtime" {>= "2.0.0"}
+]
+conflicts: [
+  "seq" {< "0.3"}
+]
+build: [
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+  ]
+]
+dev-repo: "git+https://github.com/bluddy/eio.git"
+url {
+  src: "git+https://github.com/bluddy/eio.git#typed-effects"
+}

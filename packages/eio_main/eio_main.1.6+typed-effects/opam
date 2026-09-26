@@ -1,0 +1,30 @@
+opam-version: "2.0"
+name: "eio_main"
+version: "1.6+typed-effects"
+synopsis: "Effect-based direct-style IO mainloop for OCaml (typed-effects compatible)"
+description: "Selects an appropriate Eio backend for the current platform, ported to OCaml typed effects and stdlib_v2."
+maintainer: ["anil@recoil.org"]
+authors: ["Anil Madhavapeddy" "Thomas Leonard"]
+license: "ISC"
+homepage: "https://github.com/bluddy/eio"
+doc: "https://ocaml-multicore.github.io/eio/"
+bug-reports: "https://github.com/bluddy/eio/issues"
+depends: [
+  "dune" {>= "3.9"}
+  "eio_posix" {= version & os != "win32"}
+]
+build: [
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+  ]
+]
+dev-repo: "git+https://github.com/bluddy/eio.git"
+url {
+  src: "git+https://github.com/bluddy/eio.git#typed-effects"
+}
